@@ -22,6 +22,7 @@ This package uses [@janiscommerce/microservice-call](https://www.npmjs.com/packa
 ### **`emit(event)`**
 
 Emits an event to janis-events
+Returns `true` if the operation is successful or `false` if not.
 
 #### Event parameter
 

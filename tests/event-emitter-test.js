@@ -83,7 +83,7 @@ describe('EventEmitter', () => {
 
 	describe('emit()', () => {
 
-		it('should return true when MicroserviceCall.post not rejects', async () => {
+		it('should return true when MicroserviceCall.post responses with status code 200', async () => {
 
 			const event = {
 				entity: 'some-entity',
@@ -92,9 +92,29 @@ describe('EventEmitter', () => {
 
 			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('post')
 				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
-				.returns();
+				.returns({
+					statusCode: 200
+				});
 
 			assert.deepStrictEqual(await EventEmitter.emit(event), true);
+
+			msCallMock.verify();
+		});
+
+		it('should return false when MicroserviceCall.post without status code 200', async () => {
+
+			const event = {
+				entity: 'some-entity',
+				event: 'some-event'
+			};
+
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('post')
+				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
+				.returns({
+					statusCode: 400
+				});
+
+			assert.deepStrictEqual(await EventEmitter.emit(event), false);
 
 			msCallMock.verify();
 		});
