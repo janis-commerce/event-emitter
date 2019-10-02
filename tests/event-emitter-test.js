@@ -9,10 +9,23 @@ process.env.JANIS_SERVICE_NAME = 'some-service';
 const EventEmitter = require('./../index');
 const EventEmitterError = require('./../lib/event-emitter-error');
 
+const setEnvVars = () => {
+	process.env.JANIS_SERVICE_NAME = 'some-service';
+};
+
+const clearEnvVars = () => {
+	delete process.env.JANIS_SERVICE_NAME;
+};
+
 describe('EventEmitter', () => {
 
 	beforeEach(() => {
+		setEnvVars();
 		sandbox.restore();
+	});
+
+	afterEach(() => {
+		clearEnvVars();
 	});
 
 	describe('_validateEvent()', () => {
