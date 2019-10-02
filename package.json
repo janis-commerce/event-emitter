@@ -4,9 +4,9 @@
   "description": "A package for emit events",
   "main": "index.js",
   "scripts": {
-    "test": "export TEST_ENV=true; mocha --exit -R nyan --recursive tests/",
+    "test": "export export JANIS_SERVICE_NAME=some-service; mocha --exit -R nyan --recursive tests/",
     "test-ci": "nyc --reporter=html --reporter=text mocha --recursive tests/",
-    "watch-test": "export TEST_ENV=true; mocha --exit -R nyan -w --recursive tests/",
+    "watch-test": "export JANIS_SERVICE_NAME=some-service; mocha --exit -R nyan -w --recursive tests/",
     "coverage": "nyc npm test",
     "lint": "eslint index.js lib/ tests/"
   },
@@ -31,5 +31,8 @@
   ],
   "directories": {
     "test": "tests"
+  },
+  "dependencies": {
+    "@janiscommerce/microservice-call": "^2.0.0"
   }
 }
