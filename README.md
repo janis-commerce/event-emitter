@@ -12,7 +12,7 @@ npm install @janiscommerce/event-emitter
 
 ## Configuration
 ### ENV variables
-`JANIS_SERVICE_NAME` (required): The name of the service that will emit the event.
+**`JANIS_SERVICE_NAME`** (required): The name of the service that will emit the event.
 
 ### Important
 This package uses [@janiscommerce/microservice-call](https://www.npmjs.com/package/@janiscommerce/microservice-call), it's strongly recommended read this package docs before continue.
@@ -22,11 +22,11 @@ This package uses [@janiscommerce/microservice-call](https://www.npmjs.com/packa
 ### **`emit(event)`**
 
 Emits an event to janis-events
-Returns `true` if the operation is successful or `false` if not.
+Returns `true` if the operation is successful, `false` otherwise.
 
 #### Event parameter
 
-The event parameter is an `[Object]` and have the next struct:
+The event parameter is an `[Object]` and have the following structure:
 - **`entity [String]`** (required): The name of the entity that is emiting the event
 - **`event [String]`** (required): The event name
 - **`client [String]`** (optional): The client code name

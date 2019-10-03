@@ -4,8 +4,7 @@ const assert = require('assert');
 const sandbox = require('sinon').createSandbox();
 const MicroserviceCall = require('@janiscommerce/microservice-call');
 
-const EventEmitter = require('./../index');
-const EventEmitterError = require('./../lib/event-emitter-error');
+const { EventEmitter, EventEmitterError } = require('./../lib');
 
 const setEnvVars = () => {
 	process.env.JANIS_SERVICE_NAME = 'some-service';
@@ -26,75 +25,64 @@ describe('EventEmitter', () => {
 		clearEnvVars();
 	});
 
-	describe('_validateEvent()', () => {
-
-		it('should not throw when the received event is correct', () => {
-
-			const event = {
-				entity: 'some-entity',
-				event: 'some-event',
-				client: 'some-client',
-				id: 1
-			};
-
-			assert.doesNotThrow(() => EventEmitter._validateEvent(event));
-		});
-
-		it('should throw when the received event is not an object', () => {
-			assert.throws(() => EventEmitter._validateEvent('string'), {
-				name: 'EventEmitterError',
-				code: EventEmitterError.codes.INVALID_EVENT
-			});
-		});
-
-		it('should throw when the received event is an array', () => {
-			assert.throws(() => EventEmitter._validateEvent(['array']), {
-				name: 'EventEmitterError',
-				code: EventEmitterError.codes.INVALID_EVENT
-			});
-		});
-
-		context('when the received event doesn\'t have the required fields', () => {
-
-			it('should throw if event.entity not exists', () => {
-				assert.throws(() => EventEmitter._validateEvent({ event: 'something' }), {
-					name: 'EventEmitterError',
-					code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
-				});
-			});
-
-			it('should throw if event.event not exists', () => {
-				assert.throws(() => EventEmitter._validateEvent({ entity: 'something' }), {
-					name: 'EventEmitterError',
-					code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
-				});
-			});
-		});
-
-		context('when there are bad types in the event properties', () => {
-
-			const event = {
-				event: 'some-event',
-				entity: 'some-entity'
-			};
-
-			it('should throw if event.client exists but is not a string', () => {
-				assert.throws(() => EventEmitter._validateEvent({ ...event, client: 1 }), {
-					name: 'EventEmitterError',
-					code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
-				});
-			});
-
-			it('should throw if event.id exists but is not a number or string', () => {
-				assert.throws(() => EventEmitter._validateEvent({ ...event, id: {} }), {
-					name: 'EventEmitterError',
-					code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
-				});
-			});
-		});
-	});
-
 	describe('emit()', () => {
+
+		describe('event structure validations', () => {
+
+			it('should throw when the received event is not an object', async () => {
+				await assert.rejects(EventEmitter.emit('string'), {
+					name: 'EventEmitterError',
+					code: EventEmitterError.codes.INVALID_EVENT
+				});
+			});
+
+			it('should throw when the received event is an array', async () => {
+				await assert.rejects(EventEmitter.emit(['array']), {
+					name: 'EventEmitterError',
+					code: EventEmitterError.codes.INVALID_EVENT
+				});
+			});
+
+			context('when the received event doesn\'t have the required fields', () => {
+
+				it('should throw if event.entity not exists', async () => {
+					await assert.rejects(EventEmitter.emit({ event: 'something' }), {
+						name: 'EventEmitterError',
+						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
+					});
+				});
+
+				it('should throw if event.event not exists', async () => {
+					await assert.rejects(EventEmitter.emit({ entity: 'something' }), {
+						name: 'EventEmitterError',
+						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
+					});
+				});
+			});
+
+			context('when there are bad types in the event properties', () => {
+
+				const event = {
+					event: 'some-event',
+					entity: 'some-entity'
+				};
+
+				it('should throw if event.client exists but is not a string', async () => {
+					await assert.rejects(EventEmitter.emit({ ...event, client: 1 }), {
+						name: 'EventEmitterError',
+						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
+					});
+				});
+
+				it('should throw if event.id exists but is not a number or string', async () => {
+					await assert.rejects(EventEmitter.emit({ ...event, id: {} }), {
+						name: 'EventEmitterError',
+						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
+					});
+				});
+			});
+
+		});
 
 		it('should return true when MicroserviceCall.post responses with status code 200', async () => {
 
@@ -153,7 +141,7 @@ describe('EventEmitter', () => {
 
 		it('should throw when service name env not exists', async () => {
 
-			sandbox.stub(EventEmitter, '_serviceName').get(() => undefined);
+			clearEnvVars();
 
 			await assert.rejects(EventEmitter.emit({}), {
 				name: 'EventEmitterError',
@@ -161,5 +149,4 @@ describe('EventEmitter', () => {
 			});
 		});
 	});
-
 });

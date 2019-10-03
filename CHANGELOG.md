@@ -11,3 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - unit tests
 - docs
 - `emit()` method validates microservice-call response code
+
+### Removed
+- unnecessary `index.js`
+
+### Changed
+- `main` js file from `index.js` to `lib/index.js`
