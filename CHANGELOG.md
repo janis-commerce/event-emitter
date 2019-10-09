@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `emit()` method validates microservice-call response code
 
 ### Removed
-- unnecessary `index.js`
+- unnecessary `index.js` file
+- unnecessary `lib/index.js` file
 
 ### Changed
 - `main` js file from `index.js` to `lib/index.js`
