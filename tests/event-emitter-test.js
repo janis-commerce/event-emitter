@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const sandbox = require('sinon').createSandbox();
+const sinon = require('sinon');
 const MicroserviceCall = require('@janiscommerce/microservice-call');
 
 const EventEmitter = require('./../lib/event-emitter');
@@ -19,7 +19,7 @@ describe('EventEmitter', () => {
 
 	beforeEach(() => {
 		setEnvVars();
-		sandbox.restore();
+		sinon.restore();
 	});
 
 	afterEach(() => {
@@ -92,7 +92,7 @@ describe('EventEmitter', () => {
 				event: 'some-event'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
 				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
 				.returns({
 					statusCode: 200
@@ -110,7 +110,7 @@ describe('EventEmitter', () => {
 				event: 'some-event'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
 				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
 				.returns({
 					statusCode: 400
@@ -128,7 +128,7 @@ describe('EventEmitter', () => {
 				event: 'some-event'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
 				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
 				.rejects();
 
