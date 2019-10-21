@@ -28,32 +28,32 @@ describe('EventEmitter', () => {
 
 	describe('emit()', () => {
 
-		describe('event structure validations', () => {
+		describe('Event structure validations', () => {
 
-			it('should throw when the received event is not an object', async () => {
+			it('Should throw when the received event is not an object', async () => {
 				await assert.rejects(EventEmitter.emit('string'), {
 					name: 'EventEmitterError',
 					code: EventEmitterError.codes.INVALID_EVENT
 				});
 			});
 
-			it('should throw when the received event is an array', async () => {
+			it('Should throw when the received event is an array', async () => {
 				await assert.rejects(EventEmitter.emit(['array']), {
 					name: 'EventEmitterError',
 					code: EventEmitterError.codes.INVALID_EVENT
 				});
 			});
 
-			context('when the received event doesn\'t have the required fields', () => {
+			context('When the received event doesn\'t have the required fields', () => {
 
-				it('should throw if event.entity not exists', async () => {
+				it('Should throw if event.entity not exists', async () => {
 					await assert.rejects(EventEmitter.emit({ event: 'something' }), {
 						name: 'EventEmitterError',
 						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
 					});
 				});
 
-				it('should throw if event.event not exists', async () => {
+				it('Should throw if event.event not exists', async () => {
 					await assert.rejects(EventEmitter.emit({ entity: 'something' }), {
 						name: 'EventEmitterError',
 						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
@@ -61,21 +61,21 @@ describe('EventEmitter', () => {
 				});
 			});
 
-			context('when there are bad types in the event properties', () => {
+			context('When there are bad types in the event properties', () => {
 
 				const event = {
 					event: 'some-event',
 					entity: 'some-entity'
 				};
 
-				it('should throw if event.client exists but is not a string', async () => {
+				it('Should throw if event.client exists but is not a string', async () => {
 					await assert.rejects(EventEmitter.emit({ ...event, client: 1 }), {
 						name: 'EventEmitterError',
 						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
 					});
 				});
 
-				it('should throw if event.id exists but is not a number or string', async () => {
+				it('Should throw if event.id exists but is not a number or string', async () => {
 					await assert.rejects(EventEmitter.emit({ ...event, id: {} }), {
 						name: 'EventEmitterError',
 						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
@@ -85,51 +85,102 @@ describe('EventEmitter', () => {
 
 		});
 
-		it('should return true when MicroserviceCall.post responses with status code 200', async () => {
+		it('Should return true when MicroserviceCall.post responses with status code 200', async () => {
 
 			const event = {
 				entity: 'some-entity',
-				event: 'some-event'
+				event: 'some-event',
+				service: 'some-service'
 			};
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
+				.withExactArgs('events', 'event', 'emit', { ...event }, {})
 				.returns({
-					statusCode: 200
+					statusCode: 200,
+					body: {
+						id: 'the-event-id'
+					}
 				});
 
-			assert.deepStrictEqual(await EventEmitter.emit(event), true);
+			assert.deepStrictEqual(await EventEmitter.emit(event), {
+				result: true,
+				response: {
+					statusCode: 200,
+					body: {
+						id: 'the-event-id'
+					}
+				}
+			});
 
 			msCallMock.verify();
 		});
 
-		it('should return false when MicroserviceCall.post without status code 200', async () => {
+		it('Should return false when MicroserviceCall.post without status code 200', async () => {
 
 			const event = {
 				entity: 'some-entity',
-				event: 'some-event'
+				event: 'some-event',
+				service: 'some-service'
 			};
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
+				.withExactArgs('events', 'event', 'emit', { ...event }, {})
 				.returns({
-					statusCode: 400
+					statusCode: 400,
+					body: {
+						message: 'Invalid event'
+					}
 				});
 
-			assert.deepStrictEqual(await EventEmitter.emit(event), false);
+			assert.deepStrictEqual(await EventEmitter.emit(event), {
+				result: false,
+				response: {
+					statusCode: 400,
+					body: {
+						message: 'Invalid event'
+					}
+				}
+			});
 
 			msCallMock.verify();
 		});
 
-		it('should throw when MicroserviceCall.post rejects', async () => {
+		it('Should set the janis-client header when event has the client property set', async () => {
 
 			const event = {
 				entity: 'some-entity',
-				event: 'some-event'
+				event: 'some-event',
+				service: 'some-service',
+				client: 'some-client'
 			};
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event, service: 'some-service' })
+				.withExactArgs('events', 'event', 'emit', { ...event }, { 'janis-client': 'some-client' })
+				.returns({
+					result: true,
+					response: {
+						statusCode: 200,
+						body: {
+							id: 'the-event-id'
+						}
+					}
+				});
+
+			await EventEmitter.emit(event);
+
+			msCallMock.verify();
+		});
+
+		it('Should throw when MicroserviceCall.post rejects', async () => {
+
+			const event = {
+				entity: 'some-entity',
+				event: 'some-event',
+				service: 'some-service'
+			};
+
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+				.withExactArgs('events', 'event', 'emit', { ...event }, {})
 				.rejects();
 
 			await assert.rejects(EventEmitter.emit(event), {
@@ -140,7 +191,7 @@ describe('EventEmitter', () => {
 			msCallMock.verify();
 		});
 
-		it('should throw when service name env not exists', async () => {
+		it('Should throw when service name env not exists', async () => {
 
 			clearEnvVars();
 
