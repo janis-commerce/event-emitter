@@ -94,7 +94,7 @@ describe('EventEmitter', () => {
 			};
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event }, {})
+				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
 					body: {
@@ -124,7 +124,7 @@ describe('EventEmitter', () => {
 			};
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event }, {})
+				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 400,
 					body: {
@@ -145,32 +145,6 @@ describe('EventEmitter', () => {
 			msCallMock.verify();
 		});
 
-		it('Should set the janis-client header when event has the client property set', async () => {
-
-			const event = {
-				entity: 'some-entity',
-				event: 'some-event',
-				service: 'some-service',
-				client: 'some-client'
-			};
-
-			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event }, { 'janis-client': 'some-client' })
-				.returns({
-					result: true,
-					response: {
-						statusCode: 200,
-						body: {
-							id: 'the-event-id'
-						}
-					}
-				});
-
-			await EventEmitter.emit(event);
-
-			msCallMock.verify();
-		});
-
 		it('Should throw when MicroserviceCall.post rejects', async () => {
 
 			const event = {
@@ -180,7 +154,7 @@ describe('EventEmitter', () => {
 			};
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
-				.withExactArgs('events', 'event', 'emit', { ...event }, {})
+				.withExactArgs('events', 'event', 'emit', { ...event })
 				.rejects();
 
 			await assert.rejects(EventEmitter.emit(event), {
