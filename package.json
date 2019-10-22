@@ -1,6 +1,6 @@
 {
   "name": "@janiscommerce/event-emitter",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A package for emit events",
   "main": "lib/event-emitter.js",
   "scripts": {
@@ -33,6 +33,6 @@
     "test": "tests"
   },
   "dependencies": {
-    "@janiscommerce/microservice-call": "^3.0.0"
+    "@janiscommerce/microservice-call": "^3.0.1"
   }
 }
