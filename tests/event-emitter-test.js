@@ -85,6 +85,44 @@ describe('EventEmitter', () => {
 
 		});
 
+		it('Should call MicroserviceCall.post when the received event.client and event.id are valid', async () => {
+
+			const msCallMock = sinon.mock(MicroserviceCall.prototype);
+
+			['some-id', 1].forEach(async id => {
+
+				const event = {
+					id,
+					client: 'some-client',
+					entity: 'some-entity',
+					event: 'some-event',
+					service: 'some-service'
+				};
+
+				msCallMock.expects('post')
+					.withExactArgs('events', 'event', 'emit', { ...event })
+					.returns({
+						statusCode: 200,
+						body: {
+							id
+						}
+					});
+
+				assert.deepStrictEqual(await EventEmitter.emit(event), {
+					result: true,
+					response: {
+						statusCode: 200,
+						body: {
+							id
+						}
+					}
+				});
+
+				msCallMock.verify();
+			});
+
+		});
+
 		it('Should return true when MicroserviceCall.post responses with status code 200', async () => {
 
 			const event = {
