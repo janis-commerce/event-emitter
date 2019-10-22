@@ -120,7 +120,68 @@ describe('EventEmitter', () => {
 
 				msCallMock.verify();
 			});
+		});
 
+		it('Should call MicroserviceCall.post when the received event has no client but id', async () => {
+
+			const event = {
+				id: 'some-id',
+				entity: 'some-entity',
+				event: 'some-event',
+				service: 'some-service'
+			};
+
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+				.withExactArgs('events', 'event', 'emit', { ...event })
+				.returns({
+					statusCode: 200,
+					body: {
+						id: event.id
+					}
+				});
+
+			assert.deepStrictEqual(await EventEmitter.emit(event), {
+				result: true,
+				response: {
+					statusCode: 200,
+					body: {
+						id: event.id
+					}
+				}
+			});
+
+			msCallMock.verify();
+		});
+
+		it('Should call MicroserviceCall.post when the received event has no id but client', async () => {
+
+			const event = {
+				client: 'some-client',
+				entity: 'some-entity',
+				event: 'some-event',
+				service: 'some-service'
+			};
+
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+				.withExactArgs('events', 'event', 'emit', { ...event })
+				.returns({
+					statusCode: 200,
+					body: {
+						id: 'the-event-id'
+					}
+				});
+
+			assert.deepStrictEqual(await EventEmitter.emit(event), {
+				result: true,
+				response: {
+					statusCode: 200,
+					body: {
+						id: 'the-event-id'
+					}
+				}
+			});
+
+			msCallMock.verify();
 		});
 
 		it('Should return true when MicroserviceCall.post responses with status code 200', async () => {
