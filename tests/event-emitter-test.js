@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const sinon = require('sinon');
+const sandbox = require('sinon');
 const MicroserviceCall = require('@janiscommerce/microservice-call');
 
 const EventEmitter = require('./../lib/event-emitter');
@@ -19,7 +19,7 @@ describe('EventEmitter', () => {
 
 	beforeEach(() => {
 		setEnvVars();
-		sinon.restore();
+		sandbox.restore();
 	});
 
 	afterEach(() => {
@@ -85,9 +85,9 @@ describe('EventEmitter', () => {
 
 		});
 
-		it('Should call MicroserviceCall.post when the received event.client and event.id are valid', async () => {
+		it('Should call MicroserviceCall.call when the received event.client and event.id are valid', async () => {
 
-			const msCallMock = sinon.mock(MicroserviceCall.prototype);
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype);
 
 			['some-id', 1].forEach(async id => {
 
@@ -99,7 +99,7 @@ describe('EventEmitter', () => {
 					service: 'some-service'
 				};
 
-				msCallMock.expects('post')
+				msCallMock.expects('call')
 					.withExactArgs('events', 'event', 'emit', { ...event })
 					.returns({
 						statusCode: 200,
@@ -122,7 +122,7 @@ describe('EventEmitter', () => {
 			});
 		});
 
-		it('Should call MicroserviceCall.post when the received event has no client but id', async () => {
+		it('Should call MicroserviceCall.call when the received event has no client but id', async () => {
 
 			const event = {
 				id: 'some-id',
@@ -131,7 +131,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
@@ -153,7 +153,7 @@ describe('EventEmitter', () => {
 			msCallMock.verify();
 		});
 
-		it('Should call MicroserviceCall.post when the received event has no id but client', async () => {
+		it('Should call MicroserviceCall.call when the received event has no id but client', async () => {
 
 			const event = {
 				client: 'some-client',
@@ -162,7 +162,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
@@ -184,7 +184,7 @@ describe('EventEmitter', () => {
 			msCallMock.verify();
 		});
 
-		it('Should return true when MicroserviceCall.post responses with status code 200', async () => {
+		it('Should return true when MicroserviceCall.call responses with status code 200', async () => {
 
 			const event = {
 				entity: 'some-entity',
@@ -192,7 +192,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
@@ -214,7 +214,7 @@ describe('EventEmitter', () => {
 			msCallMock.verify();
 		});
 
-		it('Should return false when MicroserviceCall.post without status code 200', async () => {
+		it('Should return false when MicroserviceCall.call without status code 200', async () => {
 
 			const event = {
 				entity: 'some-entity',
@@ -222,7 +222,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 400,
@@ -244,7 +244,7 @@ describe('EventEmitter', () => {
 			msCallMock.verify();
 		});
 
-		it('Should throw when MicroserviceCall.post rejects', async () => {
+		it('Should throw when MicroserviceCall.call rejects', async () => {
 
 			const event = {
 				entity: 'some-entity',
@@ -252,7 +252,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('post')
+			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.rejects();
 
