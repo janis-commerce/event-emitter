@@ -19,12 +19,12 @@
   "homepage": "https://github.com/janis-commerce/event-emitter.git#readme",
   "devDependencies": {
     "husky": "^4.3.0",
-    "eslint": "^7.9.0",
+    "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.22.0",
-    "mocha": "^8.1.3",
+    "eslint-plugin-import": "^2.22.1",
+    "mocha": "^8.3.0",
     "nyc": "^15.1.0",
-    "sinon": "^9.0.3"
+    "sinon": "^9.2.4"
   },
   "files": [
     "lib/"
@@ -33,6 +33,6 @@
     "test": "tests"
   },
   "dependencies": {
-    "@janiscommerce/microservice-call": "^4.1.2"
+    "@janiscommerce/microservice-call": "^4.2.0"
   }
 }

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.2.0] - 2021-02-18
+### Added
+- Now the `event.id` accepts an Array of ids
+
+### Changed
+- Updated dependencies
+
 ## [2.1.0] - 2020-09-17
 ### Added
 - Github Actions

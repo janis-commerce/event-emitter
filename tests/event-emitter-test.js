@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const sandbox = require('sinon');
+const sinon = require('sinon');
 const MicroserviceCall = require('@janiscommerce/microservice-call');
 
 const EventEmitter = require('./../lib/event-emitter');
@@ -19,7 +19,7 @@ describe('EventEmitter', () => {
 
 	beforeEach(() => {
 		setEnvVars();
-		sandbox.restore();
+		sinon.restore();
 	});
 
 	afterEach(() => {
@@ -68,18 +68,28 @@ describe('EventEmitter', () => {
 					entity: 'some-entity'
 				};
 
-				it('Should throw if event.client exists but is not a string', async () => {
-					await assert.rejects(EventEmitter.emit({ ...event, client: 1 }), {
+				const assertRejects = async data => {
+					await assert.rejects(EventEmitter.emit({ ...event, ...data }), {
 						name: 'EventEmitterError',
 						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
 					});
+				};
+
+				it('Should throw if event.client exists but is not a string', async () => {
+					await assertRejects({ client: 1 });
+					await assertRejects({ client: true });
+					await assertRejects({ client: [123] });
+					await assertRejects({ client: { foo: 'bar' } });
 				});
 
 				it('Should throw if event.id exists but is not a number or string', async () => {
-					await assert.rejects(EventEmitter.emit({ ...event, id: {} }), {
-						name: 'EventEmitterError',
-						code: EventEmitterError.codes.INVALID_EVENT_PROPERTIES
-					});
+					await assertRejects({ id: {} });
+					await assertRejects({ id: true });
+				});
+
+				it('Should throw if event.id is an Array but not all the items are number or string', async () => {
+					await assertRejects({ id: [1, 'some-id', { foo: 'bar' }] });
+					await assertRejects({ id: [] });
 				});
 			});
 
@@ -87,7 +97,7 @@ describe('EventEmitter', () => {
 
 		it('Should call MicroserviceCall.call when the received event.client and event.id are valid', async () => {
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype);
+			const msCallMock = sinon.mock(MicroserviceCall.prototype);
 
 			['some-id', 1].forEach(async id => {
 
@@ -131,7 +141,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
@@ -162,7 +172,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
@@ -192,7 +202,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 200,
@@ -222,7 +232,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.returns({
 					statusCode: 400,
@@ -252,7 +262,7 @@ describe('EventEmitter', () => {
 				service: 'some-service'
 			};
 
-			const msCallMock = sandbox.mock(MicroserviceCall.prototype).expects('call')
+			const msCallMock = sinon.mock(MicroserviceCall.prototype).expects('call')
 				.withExactArgs('events', 'event', 'emit', { ...event })
 				.rejects();
 

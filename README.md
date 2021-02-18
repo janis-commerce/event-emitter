@@ -28,10 +28,10 @@ Returns an object with a boolean property `result` set to `true` if the operatio
 #### Event parameter
 
 The event parameter is an `[Object]` and have the following structure:
-- **`entity [String]`** (required): The name of the entity that is emiting the event.
+- **`entity [String]`** (required): The name of the entity that is emitting the event.
 - **`event [String]`** (required): The event name.
 - **`client [String]`** (optional): The client code name.
-- **`id [Number|String]`** (optional): The ID of the entity that is emiting the event.
+- **`id [Number|String|Array of Strings|Array of Numbers]`** (optional): The ID or ID's of the entity that is emitting the event.
 
 ## Errors
 
@@ -62,6 +62,21 @@ process.env.JANIS_SERVICE_NAME = 'my-service';
 			event: 'some-event',
 			client: 'some-client',
 			id: 1
+		});
+
+		if(!result)
+			console.log(response);
+
+	} catch(err) {
+		throw err;
+	}
+
+	try {
+		const { result, response } = await EventEmitter.emit({
+			entity: 'some-entity',
+			event: 'some-event',
+			client: 'some-client',
+			id: [1, 2, 3, 4]
 		});
 
 		if(!result)
