@@ -99,10 +99,10 @@ describe('EventEmitter', () => {
 
 			const msCallMock = sinon.mock(MicroserviceCall.prototype);
 
-			['605e72c6e0cfb95fb0884adb', true].forEach(async id => {
+			['605e72c6e0cfb95fb0884adb', 1].forEach(async id => {
 
 				const event = {
-					id: ['605e72c6e0cfb95fb0884adb', true],
+					id,
 					client: 'some-client',
 					entity: 'some-entity',
 					event: 'some-event',
