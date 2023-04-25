@@ -1,7 +1,8 @@
 # Event Emitter
 
-[![Build Status](https://travis-ci.org/janis-commerce/event-emitter.svg?branch=master)](https://travis-ci.org/janis-commerce/event-emitter)
+![Build Status](https://github.com/janis-commerce/event-emitter/workflows/Build%20Status/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/janis-commerce/event-emitter/badge.svg?branch=master)](https://coveralls.io/github/janis-commerce/event-emitter?branch=master)
+[![npm version](https://badge.fury.io/js/%40janiscommerce%2Fevent-emitter.svg)](https://www.npmjs.com/package/@janiscommerce/event-emitter)
 
 A package to emit events to JANIS Events
 

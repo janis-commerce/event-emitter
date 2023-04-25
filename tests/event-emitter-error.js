@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const EventEmitterError = require('../lib/event-emitter-error.js');
+const EventEmitterError = require('../lib/event-emitter-error');
 
 describe('Event Emitter Error', () => {
 
