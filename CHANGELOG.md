@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.0] - 2023-04-25
+### Changed
+- Update package [@janiscommerce/microservice-call](https://www.npmjs.com/package/@janiscommerce/microservice-call) to version 5xx
+
 ## [2.2.1] - 2021-04-01
 - Fix `event.id` array validation
 
