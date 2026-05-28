@@ -5,10 +5,11 @@
   "main": "lib/event-emitter.js",
   "scripts": {
     "test": "export TEST_ENV=true; mocha --exit -R nyan --recursive tests/",
-    "test-ci": "nyc --reporter=lcov --reporter=text-summary mocha --exit --recursive tests/",
     "watch-test": "export TEST_ENV=true; mocha --exit -R nyan -w --recursive tests/",
     "coverage": "nyc npm test",
-    "lint": "eslint lib/ tests/"
+    "lint": "eslint lib/ tests/",
+    "coverage-ci": "nyc --reporter=lcov --reporter=text-summary mocha --exit --recursive tests/",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -19,9 +20,9 @@
   "homepage": "https://github.com/janis-commerce/event-emitter.git#readme",
   "devDependencies": {
     "eslint": "^8.39.0",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "husky": "^8.0.3",
+    "husky": "^9.0.0",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "sinon": "^15.0.4"
@@ -34,5 +35,8 @@
   },
   "dependencies": {
     "@janiscommerce/microservice-call": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

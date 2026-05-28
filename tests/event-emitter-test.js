@@ -4,8 +4,8 @@ const assert = require('assert');
 const sinon = require('sinon');
 const MicroserviceCall = require('@janiscommerce/microservice-call');
 
-const EventEmitter = require('./../lib/event-emitter');
-const EventEmitterError = require('./../lib/event-emitter-error');
+const EventEmitter = require('../lib/event-emitter');
+const EventEmitterError = require('../lib/event-emitter-error');
 
 const setEnvVars = () => {
 	process.env.JANIS_SERVICE_NAME = 'some-service';
